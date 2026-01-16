@@ -17,6 +17,7 @@ Bu proje, bir Raspberry Pi'ye bağlı 128x64 OLED ekran üzerinde sistem istatis
     *   Sayfalar arası otomatik geçiş (Carousel)
     *   İsteğe bağlı buton ile manuel geçiş
     *   Crafty API'ye erişilemezse otomatik olarak sadece sistem moduna geçer
+    *   Sadece sistem istatistiklerini gösterme modu (`--stats-only` veya konfigürasyon ile)
 
 ## 🛠 Donanım Gereksinimleri
 
@@ -94,6 +95,11 @@ python3 app.py
 Eğer buton kullanıyorsanız ve pini değiştirdiyseniz:
 ```bash
 python3 app.py --button-pin 4
+```
+
+Sadece sistem istatistiklerini görmek isterseniz (Crafty sunucularını gizle):
+```bash
+python3 app.py --stats-only
 ```
 
 ## 🤖 Otomatik Başlatma (Systemd Servisi)

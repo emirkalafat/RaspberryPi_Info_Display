@@ -26,6 +26,7 @@ Settings for the OLED display behavior.
 | `i2c_address` | string | "0x3C" | I2C address of the display (hex string). |
 | `default_duration` | integer | 5 | Time in seconds to show each screen. |
 | `auto_scroll` | boolean | true | Whether to automatically cycle through screens. |
+| `stats_only` | boolean | false | If true, only the System Stats screen is shown (Crafty screens skipped). |
 
 ### 3. Fonts (`fonts`)
 Settings for text rendering.
@@ -62,7 +63,8 @@ Internal system settings.
         "height": 64,
         "i2c_address": "0x3C",
         "default_duration": 10,
-        "auto_scroll": true
+        "auto_scroll": true,
+        "stats_only": false
     },
     "fonts": {
         "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",

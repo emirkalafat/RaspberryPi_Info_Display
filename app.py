@@ -47,10 +47,18 @@ def main():
         default=config.BUTTON_PIN,
         help="GPIO pin for manual switching (e.g. 4)",
     )
+    parser.add_argument(
+        "--stats-only",
+        action="store_true",
+        help="Run in Stats Only mode (ignore config.STATS_ONLY)",
+    )
     args = parser.parse_args()
 
     print("Initializing Smart Display...")
-    print(f"Settings: Autoscroll={args.autoscroll}, Duration={args.duration}s")
+    is_stats_only = args.stats_only or config.STATS_ONLY
+    print(
+        f"Settings: Autoscroll={args.autoscroll}, Duration={args.duration}s, StatsOnly={is_stats_only}"
+    )
 
     # 1. Setup I2C
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100_000)
@@ -72,12 +80,16 @@ def main():
     # 3. Setup Services
     monitor_service = SystemMonitorService()
 
-    client = CraftyClient(
-        config.CRAFTY_URL, config.CRAFTY_USERNAME, config.CRAFTY_PASSWORD
-    )
-    crafty_service = CraftyService(client)
+    authenticated = False
+    client = None
+    crafty_service = None
 
-    authenticated = client.login()
+    if not is_stats_only:
+        client = CraftyClient(
+            config.CRAFTY_URL, config.CRAFTY_USERNAME, config.CRAFTY_PASSWORD
+        )
+        crafty_service = CraftyService(client)
+        authenticated = client.login()
 
     # 4. Setup Window Manager
     wm = WindowManager(duration=args.duration, auto_scroll=args.autoscroll)
@@ -86,8 +98,8 @@ def main():
     # a) System Stats (Inject Service)
     wm.add_screen(SystemStatsScreen(font, font_small, monitor_service))
 
-    # b) Crafty Servers (if authenticated)
-    if authenticated:
+    # b) Crafty Servers (if authenticated and NOT stats only)
+    if authenticated and not is_stats_only:
         servers = client.get_servers()
         if servers:
             print(f"Found {len(servers)} servers.")
@@ -98,6 +110,9 @@ def main():
                 )
         else:
             print("No servers found or API error.")
+        print("No servers found or API error.")
+    elif is_stats_only:
+        print("Running in Stats Only mode (per config or flag).")
     else:
         print("Running in System Stats only mode (Crafty login failed).")
 
