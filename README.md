@@ -133,3 +133,8 @@ sudo systemctl start oled-display.service
 
 ## 🤝 Katkıda Bulunma
 Herhangi bir hata bulursanız veya özellik eklemek isterseniz, lütfen bir "Issue" açın veya "Pull Request" gönderin.
+
+## 📄 Lisans
+
+Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.  
+Bu, projeyi dilediğiniz gibi kullanabileceğiniz, değiştirebileceğiniz ve dağıtabileceğiniz anlamına gelir; tek şart, orijinal geliştiriciye atıfta bulunmanızdır.
