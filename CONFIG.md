@@ -52,6 +52,31 @@ Internal system settings.
 | :--- | :--- | :--- | :--- |
 | `update_interval` | integer | 10 | How often (in seconds) config data (like Crafty stats) is refreshed. |
 
+### 6. Pages (`pages`)
+Control which screens are displayed and their order.
+
+| Key | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `enabled` | array | `["system", "crafty", "datetime", "weather", "finance"]` | List of screens to display. Order matters. Available: `system`, `crafty`, `datetime`, `weather`, `finance`. |
+
+### 7. Weather (`weather`)
+Settings for the Weather screen (using Open-Meteo).
+
+| Key | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `lat` | float | 41.0082 | Latitude of the location. |
+| `lon` | float | 28.9784 | Longitude of the location. |
+| `city` | string | "Istanbul" | City name to display on screen. |
+
+### 8. Finance (`finance`)
+Settings for the Finance screen (using truncgil.com and other sources).
+
+| Key | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `base_currency` | string | "TRY" | The target currency (currently mostly ignored as API defaults to TRY). |
+| `currencies` | array | `["USD", "EUR"]` | List of foreign currencies to track against TRY. |
+| `show_gold` | boolean | true | Whether to show Gram Gold price. |
+
 ## Example `config.json`
 
 ```json
@@ -78,6 +103,19 @@ Internal system settings.
     },
     "system": {
         "update_interval": 15
+    },
+    "pages": {
+        "enabled": ["system", "datetime", "weather", "finance"]
+    },
+    "weather": {
+        "lat": 39.9334,
+        "lon": 32.8597,
+        "city": "Ankara"
+    },
+    "finance": {
+        "base_currency": "TRY",
+        "currencies": ["USD", "EUR", "GBP"],
+        "show_gold": true
     }
 }
 ```
