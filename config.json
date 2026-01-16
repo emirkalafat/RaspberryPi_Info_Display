@@ -1,0 +1,23 @@
+{
+    "crafty": {
+        "url": "https://localhost:8443"
+    },
+    "display": {
+        "width": 128,
+        "height": 64,
+        "i2c_address": "0x3C",
+        "default_duration": 5,
+        "auto_scroll": true
+    },
+    "fonts": {
+        "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "size_main": 10,
+        "size_header": 11
+    },
+    "gpio": {
+        "button_pin": null
+    },
+    "system": {
+        "update_interval": 10
+    }
+}

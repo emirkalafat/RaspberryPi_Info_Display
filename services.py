@@ -2,6 +2,7 @@ import psutil
 import subprocess
 import ast
 
+
 class SystemMonitorService:
     def get_stats(self):
         """Returns a dict with ip, cpu, ram, temp."""
@@ -9,7 +10,7 @@ class SystemMonitorService:
             "ip": self._get_ip_address(),
             "cpu": psutil.cpu_percent(),
             "ram": psutil.virtual_memory().percent,
-            "temp": self._get_cpu_temp()
+            "temp": self._get_cpu_temp(),
         }
 
     def _get_ip_address(self):
@@ -27,6 +28,7 @@ class SystemMonitorService:
         except:
             return 0.0
 
+
 class CraftyService:
     def __init__(self, api_client):
         self.api_client = api_client
@@ -36,10 +38,10 @@ class CraftyService:
         stats = self.api_client.get_server_stats(server_uuid)
         if not stats:
             return None
-        
+
         is_running = stats.get("running", False)
         player_list = []
-        
+
         if is_running:
             players_raw = stats.get("players", "0")
             if isinstance(players_raw, list):
@@ -52,10 +54,10 @@ class CraftyService:
                         player_list = ast.literal_eval(players_raw)
                     except:
                         player_list = []
-        
+
         return {
             "is_running": is_running,
             "max_players": stats.get("max", "0"),
             "player_count": len(player_list),
-            "player_names": [str(p) for p in player_list]
+            "player_names": [str(p) for p in player_list],
         }

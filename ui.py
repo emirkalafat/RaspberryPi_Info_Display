@@ -1,5 +1,7 @@
 import time
 from PIL import ImageDraw, ImageFont
+import config
+
 
 class WindowManager:
     def __init__(self, start_screen=0, duration=5, auto_scroll=True):
@@ -57,7 +59,7 @@ class SystemStatsScreen(BaseScreen):
     def draw(self, image, draw, duration):
         # Fetch data from service
         stats = self.monitor_service.get_stats()
-        
+
         # 1. Header: IP Address
         ip = stats.get("ip", "No IP")
         bbox = self.font_small.getbbox(ip)
@@ -95,7 +97,9 @@ class CraftyServerScreen(BaseScreen):
         self.crafty_service = crafty_service
         self.last_stats = None
         self.last_update = 0
-        self.update_interval = 10  # Slow down refresh rate to 10 seconds
+        self.update_interval = (
+            config.UPDATE_INTERVAL
+        )  # Slow down refresh rate to value in config
 
     def draw(self, image, draw, duration):
         # Update stats if needed
@@ -105,34 +109,39 @@ class CraftyServerScreen(BaseScreen):
             if new_stats:
                 self.last_stats = new_stats
             self.last_update = time.time()
-        
+
         # Header: Server Name
         name_display = self.server_name[:18]
         draw.text((0, 0), name_display, font=self.font_small, fill=255)
-        
+
         # Separator
         draw.line((0, 13, image.width, 13), fill=255)
-        
+
         if self.last_stats:
             is_running = self.last_stats.get("is_running", False)
-            
+
             if is_running:
                 player_count = self.last_stats.get("player_count", 0)
                 max_players = self.last_stats.get("max_players", "0")
                 player_names = self.last_stats.get("player_names", [])
-                
+
                 # Line 1: Online X/Y
-                draw.text((0, 16), f"Online {player_count}/{max_players}", font=self.font, fill=255)
-                
+                draw.text(
+                    (0, 16),
+                    f"Online {player_count}/{max_players}",
+                    font=self.font,
+                    fill=255,
+                )
+
                 # Line 2+: Players: name1 name2...
                 if player_names:
                     names_str = "Players: " + " ".join(player_names)
-                    
+
                     # Word Wrap
                     words = names_str.split(" ")
                     lines = []
                     current_line = ""
-                    
+
                     for word in words:
                         test_line = current_line + word + " "
                         bbox = self.font.getbbox(test_line)
@@ -148,11 +157,12 @@ class CraftyServerScreen(BaseScreen):
                             current_line = word + " "
                     if current_line:
                         lines.append(current_line)
-                    
+
                     # Draw lines
                     y = 30
                     for line in lines:
-                        if y > image.height - 10: break # Clip check
+                        if y > image.height - 10:
+                            break  # Clip check
                         draw.text((0, y), line.strip(), font=self.font, fill=255)
                         y += 12
                 else:

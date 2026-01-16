@@ -9,7 +9,8 @@ import adafruit_ssd1306
 import config
 from crafty import CraftyClient
 from ui import WindowManager, SystemStatsScreen, CraftyServerScreen
-from services import SystemMonitorService, CraftyService # Import Services
+from services import SystemMonitorService, CraftyService  # Import Services
+
 
 # --- I2C Chunked Fix ---
 class SSD1306_Chunked(adafruit_ssd1306.SSD1306_I2C):
@@ -31,7 +32,7 @@ def main():
     parser.add_argument(
         "--autoscroll",
         type=bool,
-        default=True,
+        default=config.AUTO_SCROLL,
         help="Enable auto-scrolling (True/False)",
     )
     parser.add_argument(
@@ -43,7 +44,7 @@ def main():
     parser.add_argument(
         "--button-pin",
         type=int,
-        default=None,
+        default=config.BUTTON_PIN,
         help="GPIO pin for manual switching (e.g. 4)",
     )
     args = parser.parse_args()
@@ -53,22 +54,24 @@ def main():
 
     # 1. Setup I2C
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100_000)
-    oled = SSD1306_Chunked(128, 64, i2c, addr=0x3C)
+    oled = SSD1306_Chunked(
+        config.DISPLAY_WIDTH, config.DISPLAY_HEIGHT, i2c, addr=config.I2C_ADDRESS
+    )
     oled.fill(0)
     oled.show()
 
     # 2. Setup Fonts
     try:
-        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-        font = ImageFont.truetype(font_path, 10)
-        font_small = ImageFont.truetype(font_path, 11)  # Header
+        font_path = config.FONT_PATH
+        font = ImageFont.truetype(font_path, config.FONT_SIZE_MAIN)
+        font_small = ImageFont.truetype(font_path, config.FONT_SIZE_HEADER)  # Header
     except IOError:
         font = ImageFont.load_default()
         font_small = ImageFont.load_default()
 
     # 3. Setup Services
     monitor_service = SystemMonitorService()
-    
+
     client = CraftyClient(
         config.CRAFTY_URL, config.CRAFTY_USERNAME, config.CRAFTY_PASSWORD
     )
@@ -90,7 +93,9 @@ def main():
             print(f"Found {len(servers)} servers.")
             for server in servers:
                 # Add a screen for each server (Inject Service)
-                wm.add_screen(CraftyServerScreen(font, font_small, server, crafty_service))
+                wm.add_screen(
+                    CraftyServerScreen(font, font_small, server, crafty_service)
+                )
         else:
             print("No servers found or API error.")
     else:
