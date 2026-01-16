@@ -21,5 +21,27 @@
     },
     "system": {
         "update_interval": 10
+    },
+    "pages": {
+        "enabled": [
+            "system",
+            "datetime",
+            "weather",
+            "finance",
+            "crafty"
+        ]
+    },
+    "weather": {
+        "lat": 41.0082,
+        "lon": 28.9784,
+        "city": "Istanbul"
+    },
+    "finance": {
+        "base_currency": "TRY",
+        "currencies": [
+            "USD",
+            "EUR"
+        ],
+        "show_gold": true
     }
 }

@@ -13,6 +13,10 @@ Bu proje, bir Raspberry Pi'ye bağlı 128x64 OLED ekran üzerinde sistem istatis
     *   Aktif sunucuları otomatik algılama
     *   Çevrimiçi oyuncu sayısı ve listesi
     *   Sunucu durumu (Açık/Kapalı)
+*   **Bilgi Ekranları (Yeni):**
+    *   **Tarih & Saat:** Dijital saat, takvim ve gün.
+    *   **Hava Durumu:** Anlık sıcaklık, durum (Açık, Yağmurlu vb.) - *Open-Meteo kullanır, API Key gerektirmez.*
+    *   **Finans:** Güncel Dolar, Euro ve Altın (Gram) fiyatları.
 *   **Akıllı Arayüz:**
     *   Sayfalar arası otomatik geçiş (Carousel)
     *   İsteğe bağlı buton ile manuel geçiş
@@ -85,6 +89,8 @@ CRAFTY_USERNAME="admin"
 CRAFTY_PASSWORD="sifreniz"
 ```
 *Not: URL'in `https://` ile başladığından emin olun.*
+
+Detaylı yapılandırma seçenekleri (Hava durumu konumu, gösterilecek sayfalar vb.) için [CONFIG.md](CONFIG.md) dosyasına göz atın. `config.json` üzerinden hangi sayfaların gösterileceğini (`enabled_pages`) ayarlayabilirsiniz.
 
 ## ▶️ Çalıştırma
 

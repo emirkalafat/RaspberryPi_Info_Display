@@ -62,3 +62,22 @@ BUTTON_PIN = get_setting("gpio.button_pin", None)
 
 # System
 UPDATE_INTERVAL = get_setting("system.update_interval", 10)
+
+# Pages
+ENABLED_PAGES = get_setting(
+    "pages.enabled", ["system", "crafty", "datetime", "weather", "finance"]
+)
+
+# Weather (Default: Istanbul)
+WEATHER_CONFIG = {
+    "lat": get_setting("weather.lat", 41.0082),
+    "lon": get_setting("weather.lon", 28.9784),
+    "city": get_setting("weather.city", "Istanbul"),
+}
+
+# Finance
+FINANCE_CONFIG = {
+    "base_currency": get_setting("finance.base_currency", "TRY"),
+    "currencies": get_setting("finance.currencies", ["USD", "EUR"]),
+    "show_gold": get_setting("finance.show_gold", True),
+}
