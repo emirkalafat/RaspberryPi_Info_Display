@@ -110,7 +110,6 @@ def main():
                 )
         else:
             print("No servers found or API error.")
-        print("No servers found or API error.")
     elif is_stats_only:
         print("Running in Stats Only mode (per config or flag).")
     else:
