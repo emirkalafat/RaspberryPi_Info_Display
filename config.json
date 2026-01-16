@@ -8,7 +8,8 @@
         "i2c_address": "0x3C",
         "default_duration": 5,
         "auto_scroll": true,
-        "stats_only": false
+        "stats_only": false,
+        "refresh_interval": 1.0
     },
     "fonts": {
         "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",

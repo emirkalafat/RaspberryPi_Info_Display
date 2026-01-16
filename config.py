@@ -50,6 +50,7 @@ I2C_ADDRESS = int(get_setting("display.i2c_address", "0x3C"), 16)
 DEFAULT_DURATION = get_setting("display.default_duration", 5)
 AUTO_SCROLL = get_setting("display.auto_scroll", True)
 STATS_ONLY = get_setting("display.stats_only", False)
+REFRESH_INTERVAL = get_setting("display.refresh_interval", 1.0)
 
 # Fonts
 FONT_PATH = get_setting("fonts.path", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")

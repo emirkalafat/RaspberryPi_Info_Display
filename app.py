@@ -130,10 +130,11 @@ def main():
 
     try:
         last_button_val = True  # Pull-UP means default High
+        last_draw_time = 0
 
         while True:
-            # Clear buffer
-            draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+            should_draw = False
+            current_time = time.time()
 
             # Handle Button
             if button:
@@ -141,16 +142,25 @@ def main():
                 if not val and last_button_val:  # Falling edge (Pressed)
                     wm.next_screen()
                     wm.auto_scroll = False  # Disable auto-scroll if user interacts?
-                    # Or maybe just reset timer.
-                    # Let's just next_screen.
+                    should_draw = True # Force draw on interaction
                 last_button_val = val
 
-            # Update & Draw
-            wm.update()
-            wm.draw(image, draw)
+            # Check for regular update interval
+            if current_time - last_draw_time >= config.REFRESH_INTERVAL:
+                should_draw = True
 
-            oled.image(image)
-            oled.show()
+            if should_draw:
+                # Clear buffer
+                draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
+                
+                # Update & Draw
+                wm.update()
+                wm.draw(image, draw)
+
+                oled.image(image)
+                oled.show()
+                
+                last_draw_time = current_time
 
             time.sleep(0.1)  # Fast loop for button responsiveness
 

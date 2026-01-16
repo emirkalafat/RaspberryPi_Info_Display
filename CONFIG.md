@@ -27,6 +27,7 @@ Settings for the OLED display behavior.
 | `default_duration` | integer | 5 | Time in seconds to show each screen. |
 | `auto_scroll` | boolean | true | Whether to automatically cycle through screens. |
 | `stats_only` | boolean | false | If true, only the System Stats screen is shown (Crafty screens skipped). |
+| `refresh_interval` | float | 1.0 | Frequency (in seconds) to update the display content. Increase to reduce load. |
 
 ### 3. Fonts (`fonts`)
 Settings for text rendering.
@@ -64,7 +65,8 @@ Internal system settings.
         "i2c_address": "0x3C",
         "default_duration": 10,
         "auto_scroll": true,
-        "stats_only": false
+        "stats_only": false,
+        "refresh_interval": 1.0
     },
     "fonts": {
         "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
