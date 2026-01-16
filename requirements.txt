@@ -1,0 +1,12 @@
+# Hardware Libraries
+adafruit-circuitpython-ssd1306
+adafruit-blinka
+rpi.gpio
+
+# Image Processing
+pillow
+
+# API & Networking
+requests
+python-dotenv
+psutil
