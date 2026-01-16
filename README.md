@@ -22,6 +22,17 @@ Bu proje, bir Raspberry Pi'ye bağlı 128x64 OLED ekran üzerinde sistem istatis
     *   İsteğe bağlı buton ile manuel geçiş
     *   Crafty API'ye erişilemezse otomatik olarak sadece sistem moduna geçer
     *   Sadece sistem istatistiklerini gösterme modu (`--stats-only` veya konfigürasyon ile)
+*   **Yüksek Performans:**
+    *   Tüm veri çekme işlemleri (Hava durumu, Borsa, Crafty) arkaplanda (threading) yapılır.
+    *   Arayüz ve animasyonlar asla donmaz.
+
+## 📂 Proje Yapısı
+
+*   `app.py`: Ana uygulama ve döngü.
+*   `ui.py`: Ekran yönetimi (WindowManager).
+*   `services/`: Arkaplan servisleri (Veri çekme işlemleri).
+*   `pages/`: Ekran tasarımları (Görsel çizim kodları).
+*   `config.json`: Kullanıcı ayarları.
 
 ## 🛠 Donanım Gereksinimleri
 
