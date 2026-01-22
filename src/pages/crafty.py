@@ -1,10 +1,9 @@
 import time
-import base64
-import io
 import config
-from PIL import Image, ImageOps
+from PIL import Image
 from .base import BaseScreen
 from services import CraftyService
+import utils
 
 
 class CraftyServerScreen(BaseScreen):
@@ -27,52 +26,66 @@ class CraftyServerScreen(BaseScreen):
 
         if self.last_stats and not self.cached_icon and not self.icon_processing_failed:
             raw_icon = self.last_stats.get("icon")
-            if raw_icon and str(raw_icon) != "False":
-                try:
-                    # Handle Data URI Scheme (e.g. data:image/png;base64,....)
-                    if "," in raw_icon:
-                        raw_icon = raw_icon.split(",")[1]
+            
+            # Use Utility to process icon
+            processed_img = utils.process_icon_data(raw_icon, target_size=(24, 24))
+            
+            if processed_img:
+                self.cached_icon = processed_img
+                print(f"DEBUG: Icon successfully cached for {self.server_name}. Size: {self.cached_icon.size}")
+            elif raw_icon and str(raw_icon) != "False":
+                # If raw icon existed but processing return None, it failed.
+                self.icon_processing_failed = True
 
-                    # Decode Base64
-                    icon_data = base64.b64decode(raw_icon)
-                    img = Image.open(io.BytesIO(icon_data))
+        # --- Dynamic Layout Calculation ---
+        has_icon = self.cached_icon is not None
 
-                    # Resize to 24x24 for Header Area
-                    img = img.resize((24, 24), Image.HAMMING)
+        raw_desc = self.last_stats.get("desc", "")
+        desc_text = ""
+        if raw_desc and str(raw_desc) != "False":
+            desc_text = str(raw_desc).split("\n")[0][:20]
+        has_desc = len(desc_text) > 0
 
-                    # Convert to 1-bit
-                    img = img.convert("1")
-                    self.cached_icon = img
-                except Exception as e:
-                    print(f"Icon Decode Error: {e}")
-                    self.icon_processing_failed = True
-            if self.cached_icon:
-                print(
-                    f"DEBUG: Icon successfully cached for {self.server_name}. Size: {self.cached_icon.size}"
-                )
-
-        # Layout Constants
-        header_height = 26
-        icon_size = 24
+        # Defaults
+        header_height = 15  # Compact (Title only)
         text_x = 0
+        title_y = 0
+        max_title_chars = 21  # Full width
 
-        # Draw Icon
-        if self.cached_icon:
+        if has_icon:
+            header_height = 26  # Must fit icon (24px)
+            text_x = 28  # Icon (24) + Padding (4)
+            max_title_chars = 15  # Reduced width
+
+            if has_desc:
+                title_y = 0
+                desc_y = 12
+            else:
+                title_y = 6  # Vertically center title relative to icon
+
+        elif has_desc:
+            header_height = 26  # Needs 2 lines
+            text_x = 0
+            max_title_chars = 21
+            title_y = 0
+            desc_y = 12
+
+        # --- Draw Header ---
+
+        # Icon
+        if has_icon and self.cached_icon:
             image.paste(self.cached_icon, (0, 0))
-            text_x = icon_size + 4  # Padding
 
-        # Line 1: Server Name (Header)
-        name_display = self.server_name[:15]  # Shorten slighty to fit
-        draw.text((text_x, 0), name_display, font=self.font_small, fill=255)
+        # Title
+        name_display = self.server_name[:max_title_chars]
+        draw.text((text_x, title_y), name_display, font=self.font_small, fill=255)
 
-        # Line 2: Description (Small, no prefix)
-        desc = self.last_stats.get("desc", "")
-        if desc and str(desc) != "False":
-            # Only show first line, truncated
-            desc_display = str(desc).split("\n")[0][:20]
-            draw.text((text_x, 12), desc_display, font=self.font, fill=255)
+        # Description
+        if has_desc:
+            # If has_icon, use same text_x. If not, use 0.
+            draw.text((text_x, desc_y), desc_text, font=self.font, fill=255)
 
-        # Separator (Below icon/header)
+        # Separator
         draw.line((0, header_height, image.width, header_height), fill=255)
 
         if self.last_stats:

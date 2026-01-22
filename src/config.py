@@ -8,7 +8,7 @@ load_dotenv()
 
 # Function to load config
 def load_config():
-    config_path = os.path.join(os.path.dirname(__file__), "config.json")
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
     if not os.path.exists(config_path):
         print(f"Warning: {config_path} not found. Using defaults.")
         return {}

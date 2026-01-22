@@ -29,10 +29,12 @@ Bu proje, bir Raspberry Pi'ye bağlı 128x64 OLED ekran üzerinde sistem istatis
 
 ## 📂 Proje Yapısı
 
-*   `app.py`: Ana uygulama ve döngü.
-*   `ui.py`: Ekran yönetimi (WindowManager).
-*   `services/`: Arkaplan servisleri (Veri çekme işlemleri).
-*   `pages/`: Ekran tasarımları (Görsel çizim kodları).
+*   `run.sh`: Uygulamayı başlatmak için kullanılan ana script.
+*   `src/`: Kaynak kodlar.
+    *   `app.py`: Ana uygulama.
+    *   `ui.py`: Ekran yönetimi.
+    *   `services/`: Arkaplan servisleri.
+    *   `pages/`: Ekran tasarımları.
 *   `config.json`: Kullanıcı ayarları.
 
 ## 🛠 Donanım Gereksinimleri
@@ -106,18 +108,27 @@ Detaylı yapılandırma seçenekleri (Hava durumu konumu, gösterilecek sayfalar
 
 ## ▶️ Çalıştırma
 
+### Kolay Başlatma (Önerilen)
+
+`run.sh` scripti, sanal ortamı otomatik kontrol eder ve uygulumayı başlatır.
+
 ```bash
-python3 app.py
+chmod +x run.sh
+./run.sh
 ```
 
-Eğer buton kullanıyorsanız ve pini değiştirdiyseniz:
+### Manuel Parametreler
+
+`run.sh` üzerinden de parametre gönderebilirsiniz:
+
+Eğer buton pini farklıysa:
 ```bash
-python3 app.py --button-pin 4
+./run.sh --button-pin 4
 ```
 
-Sadece sistem istatistiklerini görmek isterseniz (Crafty sunucularını gizle):
+Sadece sistem istatistiklerini görmek isterseniz:
 ```bash
-python3 app.py --stats-only
+./run.sh --stats-only
 ```
 
 ## 🤖 Otomatik Başlatma (Systemd Servisi)
@@ -129,7 +140,7 @@ Raspberry Pi açıldığında programın otomatik çalışması için:
 sudo nano /etc/systemd/system/oled-display.service
 ```
 
-2. Aşağıdaki içeriği yapıştırın (Dosya yollarını kendi kullanıcı adınıza göre düzenleyin, genelde `pi` veya `emirk`):
+2. Aşağıdaki içeriği yapıştırın (Dosya yollarını kendi kullanıcı adınıza göre düzenleyin, genelde `pi` veya `<kullanıcı_adınız>`):
 
 ```ini
 [Unit]
@@ -138,9 +149,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=emirk
-WorkingDirectory=/home/emirk/RaspberryPi_Info_Display
-ExecStart=/home/emirk/RaspberryPi_Info_Display/.venv/bin/python3 app.py
+User=<kullanıcı_adınız>
+WorkingDirectory=/home/<kullanıcı_adınız>/RaspberryPi_Info_Display
+ExecStart=/home/<kullanıcı_adınız>/RaspberryPi_Info_Display/run.sh
 Restart=always
 RestartSec=10
 

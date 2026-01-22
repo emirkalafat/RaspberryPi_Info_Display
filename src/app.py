@@ -7,7 +7,10 @@ from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
 import config
-import config
+try:
+    from . import version
+except ImportError:
+    import version
 from ui import WindowManager
 from services import (
     SystemMonitorService,
@@ -67,7 +70,7 @@ def main():
     )
     args = parser.parse_args()
 
-    print("Initializing Smart Display...")
+    print(f"Initializing Smart Display v{version.__version__}...")
     print(f"Settings: Autoscroll={args.autoscroll}, Duration={args.duration}s")
 
     # 1. Setup I2C
