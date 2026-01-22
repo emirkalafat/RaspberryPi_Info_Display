@@ -87,16 +87,8 @@ def main():
         font = ImageFont.load_default()
         font_small = ImageFont.load_default()
 
-    # 3. Initialize Services
-    monitor_service = SystemMonitorService()
-    weather_service = WeatherService(config.WEATHER_CONFIG)
-    finance_service = FinanceService(config.FINANCE_CONFIG)
     
-    # Crafty Service Init
-    crafty_service = None
-    authenticated = False
-    
-    # Determine enabled pages
+    # 3. Determine enabled pages FIRST (to decide which services to init)
     enabled_pages = config.ENABLED_PAGES[:] # Copy
     
     # Handle Stats Only Flag (Remove crafty if present)
@@ -104,6 +96,23 @@ def main():
         enabled_pages.remove("crafty")
         print("Stats Only mode: Crafty disabled.")
 
+    print(f"Loading pages: {enabled_pages}")
+
+    # 4. Initialize Services (Conditionally)
+    monitor_service = SystemMonitorService()
+    
+    weather_service = None
+    if "weather" in enabled_pages:
+         weather_service = WeatherService(config.WEATHER_CONFIG)
+         
+    finance_service = None
+    if "finance" in enabled_pages:
+         finance_service = FinanceService(config.FINANCE_CONFIG)
+    
+    # Crafty Service Init
+    crafty_service = None
+    authenticated = False
+    
     # Only Initialize Crafty if needed
     if "crafty" in enabled_pages:
         try:
