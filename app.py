@@ -111,11 +111,15 @@ def main():
                 config.CRAFTY_URL, config.CRAFTY_USERNAME, config.CRAFTY_PASSWORD
             )
             authenticated = client.login()
+            authenticated = client.login()
+            
+            # Always Initialize Service (Hybrid Mode)
+            crafty_service = CraftyService(client)
+            
             if authenticated:
-                crafty_service = CraftyService(client)
-                print("Crafty Login Successful")
+                print("Crafty Login Successful (Authenticated Mode)")
             else:
-                print("Crafty Login Failed - Skipping Crafty screens")
+                print("Crafty Login Failed - Using Public Mode (Fallback)")
         except Exception as e:
             print(f"Crafty Connection Error: {e}")
 
@@ -138,13 +142,47 @@ def main():
             wm.add_screen(FinanceScreen(font, font_small, finance_service))
             
         elif page_name == "crafty":
-            if authenticated and crafty_service:
-                servers = client.get_servers()
+            if crafty_service:
+                # We need to fetch the server list differently now because we might be unauthenticated
+                # The service holds the cache, let's just ask it for what it has found
+                # But the UI expects server objects.
+                # The Service updates its cache, but doesn't expose the list of servers directly as cleanly.
+                # Let's peek into the service's last fetched data if possible or just use the client again lightly?
+                # Actually, the original code called client.get_servers() here which is synchronous.
+                # Let's use the service's cache keys as the server list if we can.
+                
+                # Correction: The original code fetched servers ONCE at start of loop to populate pages.
+                # We should do the same.
+                
+                servers = []
+                if authenticated:
+                    servers = client.get_servers()
+                else:
+                    servers = client.get_public_server_stats()
+
                 if servers:
                     print(f"Found {len(servers)} Crafty servers.")
                     for server in servers:
+                        # Normalize server object for the UI
+                        unified_server = {}
+                        
+                        if authenticated:
+                            # Trust existing structure (assuming it matches what was working before)
+                            # Usually: server_id, server_name (or server_label?)
+                            # If checking old logs or code, we saw server_id usage.
+                            unified_server = server
+                            # Ensure defaults if something is missing
+                            if "server_name" not in unified_server and "server_label" in unified_server:
+                                unified_server["server_name"] = unified_server["server_label"]
+                        else:
+                            # Public Mode Mapping
+                            unified_server = {
+                                "server_id": server.get("id"),
+                                "server_name": server.get("world_name", "Unknown Server")
+                            }
+                        
                         wm.add_screen(
-                            CraftyServerScreen(font, font_small, server, crafty_service)
+                            CraftyServerScreen(font, font_small, unified_server, crafty_service)
                         )
                 else:
                     print("No Crafty servers found.")

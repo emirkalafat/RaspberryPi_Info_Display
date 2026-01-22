@@ -13,6 +13,7 @@ Bu proje, bir Raspberry Pi'ye bağlı 128x64 OLED ekran üzerinde sistem istatis
     *   Aktif sunucuları otomatik algılama
     *   Çevrimiçi oyuncu sayısı ve listesi
     *   Sunucu durumu (Açık/Kapalı)
+    *   **2FA Limiti:** 2FA etkin hesaplarda otomatik olarak "Public Mode"a geçerek çalışır (Oyuncu isimleri görüntülenmez).
 *   **Bilgi Ekranları (Yeni):**
     *   **Tarih & Saat:** Dijital saat, takvim ve gün.
     *   **Hava Durumu:** Anlık sıcaklık, durum (Açık, Yağmurlu vb.) - *Open-Meteo kullanır, API Key gerektirmez.*

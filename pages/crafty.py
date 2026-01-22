@@ -39,7 +39,36 @@ class CraftyServerScreen(BaseScreen):
                     fill=255,
                 )
 
-                # Line 2+: Players: name1 name2...
+                # Line 2: Version (if present)
+                current_y = 28
+                version = self.last_stats.get("version", "")
+                if version and str(version) != "False":
+                    draw.text(
+                        (0, current_y), 
+                        f"Ver: {str(version)[:15]}", # Limit length
+                        font=self.font, 
+                        fill=255
+                    )
+                    current_y += 12
+                
+                # Line 3: Description (if present)
+                desc = self.last_stats.get("desc", "")
+                if desc and str(desc) != "False":
+                    # Only show first line or truncated
+                    desc_display = str(desc).split("\n")[0][:20]
+                    draw.text(
+                        (0, current_y), 
+                        f"Desc: {desc_display}", 
+                        font=self.font, 
+                        fill=255
+                    )
+                    current_y += 12
+                
+                # Separator if details were shown, to space out players
+                if current_y > 28:
+                    current_y += 2
+
+                # Line 4+: Players: name1 name2...
                 if player_names:
                     names_str = "Players: " + " ".join(player_names)
 
@@ -65,14 +94,15 @@ class CraftyServerScreen(BaseScreen):
                         lines.append(current_line)
 
                     # Draw lines
-                    y = 30
+                    y = current_y
                     for line in lines:
                         if y > image.height - 10:
                             break  # Clip check
                         draw.text((0, y), line.strip(), font=self.font, fill=255)
                         y += 12
-                else:
-                    draw.text((0, 30), "Players: None", font=self.font, fill=255)
+                # else:
+                #    Do not show "Players: None" because it might be misleading in Public Mode
+                #    (where Count > 0 but Names are empty).
 
             else:
                 draw.text((0, 16), "Status: Offline", font=self.font, fill=255)

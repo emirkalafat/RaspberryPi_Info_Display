@@ -11,6 +11,8 @@ Settings for connecting to the Crafty Controller API.
 
 > [!NOTE]
 > **Authentication Credentials**: The `username` and `password` are NOT stored in this file. They must be set in a `.env` file as `CRAFTY_USERNAME` and `CRAFTY_PASSWORD`.
+>
+> **2FA Limitation**: If your Crafty account has 2FA enabled, the login will fail. The system will automatically switch to **Public Fallback Mode**. In this mode, it fetches data from the public status endpoint. Basic stats (online count, status) will work, but **player names will not be visible**.
 
 | Key | Type | Default | Description |
 | :--- | :--- | :--- | :--- |

@@ -73,3 +73,17 @@ class CraftyClient:
         except Exception as e:
             print(f"Error getting stats for {server_uuid}: {e}")
             return None
+
+    def get_public_server_stats(self):
+        """Retrieves server stats from the public status endpoint."""
+        endpoint = f"{self.base_url}/api/v2/servers/status"
+        try:
+            response = self.session.get(endpoint)
+            response.raise_for_status()
+            data = response.json()
+            if data.get("status") == "ok":
+                return data["data"]
+            return []
+        except Exception as e:
+            print(f"Error getting public stats: {e}")
+            return []
